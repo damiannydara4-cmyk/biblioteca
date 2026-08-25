@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Biblioteca Pessoal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Minha Biblioteca Pessoal</h1>
+
+        <!-- Seção de Pesquisa -->
+        <section>
+            <h2>Pesquisar Livros</h2>
+            <input type="text" id="searchInput" placeholder="Digite o título ou autor...">
+            <button onclick="pesquisarLivros()">Buscar</button>
+            <div id="searchResults"></div>
+        </section>
+
+        <!-- Seção da Estante -->
+        <section>
+            <h2>Minha Estante</h2>
+            <div id="shelfResults"></div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+   
+</body>
+</html>
