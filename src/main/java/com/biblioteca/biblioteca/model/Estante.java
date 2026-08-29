@@ -1,5 +1,4 @@
 package com.biblioteca.biblioteca.model;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,8 +37,3 @@ public class Estante {
 }
 
 
-public enum StatusLeitura {
-    QUERO_LER,
-    LENDO,
-    LIDO
-}

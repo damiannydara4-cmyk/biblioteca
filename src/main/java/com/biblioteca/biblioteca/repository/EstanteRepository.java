@@ -1,8 +1,8 @@
 package com.biblioteca.biblioteca.repository;
-
-import com.biblioteca.biblioteca.model.Estante;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.biblioteca.biblioteca.model.Estante; 
 
 import java.util.Optional;
 

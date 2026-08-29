@@ -1,58 +1,160 @@
-const API_URL = 'http://localhost:8080/estante';
-
-document.addEventListener("DOMContentLoaded", () => {   /*executada assim que a página carrega*/
+const API_ESTANTE = 'http://localhost:9000/estante';
+const API_LIVROS = 'http://localhost:9000/livros';
+ 
+document.addEventListener('DOMContentLoaded', () => {
     carregarEstante();
- });
-
- async function carregarEstante() {
+});
+console.log("Script carregado com sucesso!");
+ 
+// 1. Pesquisar livros na API do Google Books via Backend
+async function pesquisarLivros() {
+    const termo = document.getElementById('searchInput').value;
+    const searchResults = document.getElementById('searchResults');
+ 
+    if (!termo.trim()) {
+        alert('Digite um termo para pesquisar.');
+        return;
+    }
+ 
+    searchResults.innerHTML = '<p>Pesquisando...</p>';
+ 
+    try {
+        const url = `${API_LIVROS}?busca=${encodeURIComponent(termo)}`;
+        console.log("Fazendo fetch para:", url); // Log para acompanhar no F12
+ 
+        const response = await fetch(url);
+ 
+        // Se o servidor retornar erro (ex: 500, 404)
+        if (!response.ok) {
+            const erroTexto = await response.text();
+            throw new Error(`Erro do servidor (${response.status}): ${erroTexto}`);
+        }
+ 
+        const livros = await response.json();
+ 
+        if (!Array.isArray(livros) || livros.length === 0) {
+            searchResults.innerHTML = '<p>Nenhum livro encontrado.</p>';
+            return;
+        }
+ 
+        searchResults.innerHTML = '';
+        livros.forEach(item => {
+            const info = item.volumeInfo || {};
+            const titulo = info.title || 'Título desconhecido';
+            const autor = info.authors ? info.authors.join(', ') : 'Autor desconhecido';
+            const sinopse = info.description ? info.description.substring(0, 120) + '...' : 'Sem sinopse.';
+            const capa = info.imageLinks && info.imageLinks.thumbnail ? info.imageLinks.thumbnail : 'https://via.placeholder.com/128x192?text=Sem+Capa';
+ 
+            const card = document.createElement('div');
+            card.style.cssText = 'border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 5px; background: #fafafa;';
+ 
+            card.innerHTML = `
+                <div style="display: flex; gap: 15px;">
+                    <img src="${capa}" alt="Capa" style="width: 70px; height: 100px; object-fit: cover;">
+                    <div>
+                        <h4>${titulo}</h4>
+                        <p><strong>Autor:</strong> ${autor}</p>
+                        <p style="font-size: 13px; color: #555;">${sinopse}</p>
+                        <button onclick='adicionarEstante("${item.id}", ${JSON.stringify(titulo)}, ${JSON.stringify(autor)}, ${JSON.stringify(sinopse)}, ${JSON.stringify(capa)})' style="background: #28a745; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px;">Adicionar à Estante (Quero Ler)</button>
+                    </div>
+                </div>
+            `;
+            searchResults.appendChild(card);
+        });
+ 
+    } catch (error) {
+        console.error("Erro capturado:", error);
+        searchResults.innerHTML = `<p style="color: red;">Erro ao buscar livros: ${error.message}</p>`;
+    }
+}
+ 
+// 2. Salvar livro na estante (POST /estante)
+async function adicionarEstante(googleBookId, titulo, autor, sinopse, capa) {
+    const novoLivro = {
+        googleBookId: googleBookId,
+        titulo: titulo,
+        autor: autor,
+        sinopse: sinopse,
+        capa: capa,
+        statusLeitura: 'QUERO_LER'
+    };
+ 
+    try {
+        const response = await fetch(API_ESTANTE, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(novoLivro)
+        });
+ 
+        if (response.ok) {
+            alert('Livro adicionado à estante com sucesso!');
+            carregarEstante(); // Atualiza a lista da estante embaixo
+        } else {
+            const mensagemErro = await response.text();
+            alert('Aviso: ' + mensagemErro);
+        }
+    } catch (error) {
+        console.error(error);
+        alert('Erro ao conectar com o servidor.');
+    }
+}
+ 
+// 3. Carregar estante pessoal (GET /estante)
+async function carregarEstante() {
     const shelfResults = document.getElementById('shelfResults');
     shelfResults.innerHTML = '<p>Carregando estante...</p>';
-
+ 
     try {
-        const response = await fetch(API_URL);
+        const response = await fetch(API_ESTANTE);
         if (!response.ok) throw new Error('Erro ao carregar a estante');
-
+ 
         const livros = await response.json();
-        
+ 
         if (livros.length === 0) {
             shelfResults.innerHTML = '<p>Sua estante está vazia.</p>';
             return;
         }
-
-        shelfResults.innerHTML = '';  /*criou um local onde vai haver uma substituição*/ 
+ 
+        shelfResults.innerHTML = '';
         livros.forEach(livro => {
             const card = document.createElement('div');
-            card.style.border = '1px solid #ccc';
-            card.style.padding = '10px';
-            card.style.marginBottom = '10px';
-            card.style.borderRadius = '5px';
-            
+            card.style.cssText = 'border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 5px; display: flex; gap: 15px; align-items: center;';
+ 
             card.innerHTML = `
-                <h3>${livro.titulo}</h3>
-                <p><strong>Autor:</strong> ${livro.autor || 'Desconhecido'}</p>
-                <p><strong>Status:</strong> ${livro.statusLeitura}</p>
-                <button onclick="removerLivro(${livro.id})" style="background: #ff4d4d; color: white; border: none; padding: 5px 10px; cursor: pointer;">Remover</button>
+                <img src="${livro.capa || 'https://via.placeholder.com/50x75'}" alt="Capa" style="width: 50px; height: 75px; object-fit: cover;">
+                <div style="flex-grow: 1;">
+                    <h4 style="margin: 0 0 5px 0;">${livro.titulo}</h4>
+                    <p style="margin: 0 0 5px 0; font-size: 13px;"><strong>Autor:</strong> ${livro.autor || 'Desconhecido'}</p>
+                    <label style="font-size: 12px;"><strong>Status:</strong>
+                        <select onchange="atualizarStatusLeitura(${livro.id}, this.value)">
+                            <option value="QUERO_LER" ${livro.statusLeitura === 'QUERO_LER' ? 'selected' : ''}>Quero Ler</option>
+                            <option value="LENDO" ${livro.statusLeitura === 'LENDO' ? 'selected' : ''}>Lendo</option>
+                            <option value="LIDO" ${livro.statusLeitura === 'LIDO' ? 'selected' : ''}>Lido</option>
+                        </select>
+                    </label>
+                </div>
+                <button onclick="removerLivro(${livro.id})" style="background: #dc3545; color: white; border: none; padding: 6px 10px; cursor: pointer; border-radius: 4px;">Remover</button>
             `;
             shelfResults.appendChild(card);
         });
-
+ 
     } catch (error) {
         console.error(error);
         shelfResults.innerHTML = '<p style="color: red;">Erro ao conectar com o servidor.</p>';
     }
-} 
-
-    // Função para remover livro da estante
+}
+ 
+// 4. Remover livro da estante (DELETE /estante/{id})
 async function removerLivro(id) {
     if (!confirm('Deseja realmente remover este livro?')) return;
-
+ 
     try {
-        const response = await fetch(`${API_URL}/${id}`, {
+        const response = await fetch(`${API_ESTANTE}/${id}`, {
             method: 'DELETE'
         });
-
+ 
         if (response.ok) {
-            carregarEstante(); // Recarrega a lista
+            carregarEstante();
         } else {
             alert('Erro ao remover o livro.');
         }
@@ -60,10 +162,23 @@ async function removerLivro(id) {
         console.error(error);
     }
 }
-
-function pesquisarLivros() {
-    const termo = document.getElementById('searchInput').value;
-    console.log("Pesquisando por:", termo);
-    
+ 
+// 5. Atualizar status de leitura (PATCH /estante/{id})
+async function atualizarStatusLeitura(id, novoStatus) {
+    try {
+        const response = await fetch(`${API_ESTANTE}/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ statusLeitura: novoStatus })
+        });
+ 
+        if (!response.ok) {
+            const erro = await response.text();
+            alert('Erro ao atualizar status: ' + erro);
+            carregarEstante(); // reverte o select visualmente
+        }
+    } catch (error) {
+        console.error(error);
+        alert('Erro ao conectar com o servidor.');
+    }
 }
-
