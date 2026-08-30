@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    background-color: #9E4133;
     margin: 0;
     padding: 20px;
 }
@@ -23,3 +23,44 @@ input {
 button {
     padding: 8px 15px;
 }
+.toast {
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    animation: toast-in 0.3s ease, toast-out 0.3s ease 2.7s;
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+.toast.success {
+    background: #2e7d32;
+}
+.toast.error { 
+    background: #c62828;
+}
+.toast.info {
+    background: #1565c0;
+}
+
+@keyframes toast-in { from { opacity: 0; transform: translateX(30px);} to { opacity: 1; transform: translateX(0);} }
+@keyframes toast-out { to { opacity: 0; transform: translateX(30px);} }
+
+.spinner {
+    border: 4px solid #eee;
+    border-top: 4px solid #1565c0;
+    border-radius: 50%;
+    width: 32px; height: 32px;
+    animation: spin 0.8s linear infinite;
+    margin: 20px auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.skeleton-card {
+    background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.2s infinite;
+    border-radius: 8px;
+    height: 220px;
+}
+@keyframes skeleton-loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
