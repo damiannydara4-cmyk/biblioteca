@@ -13,8 +13,8 @@
         <!-- Seção de Pesquisa -->
         <section>
             <h2>Pesquisar Livros</h2>
-            <input type="text" id="searchInput" placeholder="Digite o título ou autor...">
-            <button onclick="pesquisarLivros()">Buscar</button>
+            <input type="text" id="searchInput" placeholder="Digite o título ou autor..." onkeydown="if(event.key === 'Enter') pesquisarLivros()">
+            <button id="btn-buscar">Buscar</button>
             <div id="searchResults"></div>
         </section>
 

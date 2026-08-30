@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 console.log("Script carregado com sucesso!");
 
+
 // 1. Pesquisar livros na API do Google Books via Backend
 async function pesquisarLivros() {
     const termo = document.getElementById('searchInput').value;
