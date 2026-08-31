@@ -1,2 +1,3 @@
 # biblioteca
 
+terminal: c

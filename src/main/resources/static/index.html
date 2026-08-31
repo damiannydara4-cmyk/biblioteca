@@ -18,13 +18,47 @@
             <div id="searchResults"></div>
         </section>
 
+
+        <div class="busca-estante-container" style="margin-bottom: 15px;">
+            <input type="text" id="busca-interna" placeholder="Filtrar livros na sua estante..." style="padding: 8px; width: 300px; border: 1px solid #ccc; border-radius: 4px;">
+        </div>
+
+        <!--Seção de Filtração por Status-->
+        <div class="filtros-estante">
+            <button class="filtro-btn ativo" data-status="TODOS">Todos <span class="badge" id="badge-TODOS"></span></button>
+            <button class="filtro-btn" data-status="QUERO_LER">Quero ler<span class="badge" id="badge-QUERO_LER"></span></button>
+            <button class="filtro-btn" data-status="LENDO">Lendo <span class="badge" id="badge-LENDO"></span></button>
+            <button class="filtro-btn" data-status="LIDO">Lidos <span class="badge" id="badge-LIDO"></span></button>
+        </div>
+
         <!-- Seção da Estante -->
         <section>
             <h2>Minha Estante</h2>
             <div id="shelfResults"></div>
         </section>
+
+        <select id="select-ordenacao">
+            <option value="titulo">Título (A-Z)</option>
+            <option value="autor">Autor</option>
+            <option value="dataAdicao">Mais recentes</option>
+        </select>
+
+        <div id="modal-livro" class="modal-overlay oculto">
+            <div class="modal-conteudo">
+                <button id="fechar-modal" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
+                <h2 id="modal-titulo"></h2>
+                <p><strong>Autor: </strong><span id="modal-autor"></span></p>
+                <p><strong>Editora: </strong><span id="modal-editora"></span></p>
+                <p><strong>Publicação: </strong><span id="modal-data"></span></p>
+                <p><strong>Páginas: </strong><span id="modal-paginas"></span></p>
+                <p id="modal-sinopse"></p>
+                
+            </div>
+
+        </div>
+        <div id="toast-container" style="position:fixed; top:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:10px;"></div>
     </div>
-    <div id="toast-container" style="position:fixed; top:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:10px;"></div>
+    
 
     
 
