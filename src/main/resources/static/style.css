@@ -1,63 +1,254 @@
+/* ===================================================
+   Minha Biblioteca Pessoal — tema "biblioteca rústica"
+   Paleta: bege/creme suave, marrom-madeira, terracota
+   Todas as classes e IDs originais foram mantidos —
+   nenhuma funcionalidade foi alterada, apenas o visual.
+   =================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500&display=swap');
+
+:root {
+    --marrom-escuro: #3b2b23;
+    --marrom-madeira: #6f4a35;
+    --terracota: #9e4133;
+    --terracota-claro: #c17a5f;
+    --creme: #fbf7ef;
+    --creme-claro: #fffdf9;
+    --bege-fundo: #ede2cf;
+    --bege-borda: #e2d6c3;
+    --texto: #3f342c;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+/* Fundo suave, ocupando a página inteira, com uma leve
+   textura de "papel" em vez do terracota forte */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #9E4133;
+    font-family: 'Poppins', Arial, sans-serif;
+    color: var(--texto);
+    min-height: 100vh;
+    line-height: 1.6;
+    background-color: var(--bege-fundo);
+    background-image:
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.35) 0 2px, transparent 2px 6px),
+        radial-gradient(circle at 15% 10%, rgba(255,255,255,0.5) 0, transparent 45%),
+        radial-gradient(circle at 85% 90%, rgba(111,74,53,0.10) 0, transparent 45%);
     margin: 0;
-    padding: 20px;
+    padding: 48px 24px;
 }
+
+/* Container mais largo, com "respiro" generoso e uma
+   moldura dupla que remete a um caderno/estante rústica */
 .container {
-    max-width: 800px;
+    max-width: 960px;
     margin: auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: var(--creme);
+    padding: 50px 60px;
+    border-radius: 14px;
+    border: 1px solid var(--bege-borda);
+    outline: 1px solid rgba(111,74,53,0.15);
+    outline-offset: -10px;
+    box-shadow: 0 10px 30px rgba(59, 43, 35, 0.18);
+    position: relative;
 }
+
+/* Detalhes rústicos nas laterais: faixas verticais
+   texturizadas, como lombadas de livros na estante */
+.container::before,
+.container::after {
+    content: "";
+    position: absolute;
+    top: 24px;
+    bottom: 24px;
+    width: 14px;
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            var(--marrom-madeira) 0 18px,
+            var(--terracota-claro) 18px 30px,
+            var(--marrom-escuro) 30px 44px,
+            var(--bege-borda) 44px 60px
+        );
+    border-radius: 4px;
+    opacity: 0.55;
+}
+
+.container::before {
+    left: -7px;
+}
+
+.container::after {
+    right: -7px;
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.1rem;
+    color: var(--marrom-escuro);
+    text-align: center;
+    margin: 0 0 8px;
+    letter-spacing: 0.5px;
+}
+
+h1::after {
+    content: "";
+    display: block;
+    width: 90px;
+    height: 2px;
+    background: var(--terracota-claro);
+    margin: 18px auto 0;
+}
+
+h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--marrom-madeira);
+    border-bottom: 1px solid var(--bege-borda);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
 section {
-    margin-bottom: 30px;
+    margin-bottom: 44px;
 }
+
+/* ---------- Campos e botões ---------- */
+
+input, select {
+    padding: 11px 14px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    background: var(--creme-claro);
+    border: 1px solid var(--bege-borda);
+    border-radius: 6px;
+    color: var(--texto);
+}
+
 input {
-    padding: 8px;
     width: 70%;
-    margin-right: 10px;
+    margin-right: 12px;
+    margin-bottom: 6px;
 }
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--terracota-claro);
+    box-shadow: 0 0 0 2px rgba(158, 65, 51, 0.15);
+}
+
 button {
-    padding: 8px 15px;
+    padding: 11px 22px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    background: var(--marrom-madeira);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
 }
+
+button:hover {
+    background: var(--terracota);
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+.busca-estante-container {
+    margin-bottom: 20px !important;
+}
+
+/* ---------- Filtros por status (abas) ---------- */
+
+.filtros-estante {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--bege-borda);
+    padding-bottom: 8px;
+}
+
+.filtro-btn {
+    background: none;
+    color: var(--marrom-madeira);
+    padding: 8px 6px;
+    border-radius: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.filtro-btn:hover {
+    background: none;
+    color: var(--terracota);
+}
+
+.filtro-btn.ativo {
+    font-weight: 600;
+    color: var(--terracota);
+    border-bottom: 2px solid var(--terracota);
+}
+
+.badge {
+    background: var(--bege-borda);
+    color: var(--marrom-escuro);
+    border-radius: 10px;
+    padding: 3px 9px;
+    font-size: 12px;
+    margin-left: 6px;
+}
+
+#select-ordenacao {
+    margin-top: 8px;
+    margin-bottom: 20px;
+}
+
+/* ---------- Toasts ---------- */
+
 .toast {
-    padding: 12px 20px;
+    padding: 14px 22px;
     border-radius: 8px;
     color: #fff;
     font-size: 14px;
+    font-family: 'Poppins', sans-serif;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     animation: toast-in 0.3s ease, toast-out 0.3s ease 2.7s;
     opacity: 0;
     animation-fill-mode: forwards;
 }
 .toast.success {
-    background: #2e7d32;
+    background: #5c7a4f;
 }
-.toast.error { 
-    background: #c62828;
+.toast.error {
+    background: var(--terracota);
 }
 .toast.info {
-    background: #1565c0;
+    background: #5b7a8c;
 }
 
 @keyframes toast-in { from { opacity: 0; transform: translateX(30px);} to { opacity: 1; transform: translateX(0);} }
 @keyframes toast-out { to { opacity: 0; transform: translateX(30px);} }
 
+/* ---------- Loading ---------- */
+
 .spinner {
-    border: 4px solid #eee;
-    border-top: 4px solid #1565c0;
+    border: 4px solid var(--bege-borda);
+    border-top: 4px solid var(--terracota);
     border-radius: 50%;
     width: 32px; height: 32px;
     animation: spin 0.8s linear infinite;
-    margin: 20px auto;
+    margin: 24px auto;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .skeleton-card {
-    background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+    background: linear-gradient(90deg, var(--bege-borda) 25%, var(--creme-claro) 50%, var(--bege-borda) 75%);
     background-size: 200% 100%;
     animation: skeleton-loading 1.2s infinite;
     border-radius: 8px;
@@ -65,22 +256,12 @@ button {
 }
 @keyframes skeleton-loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-.badge {
-    background: #eee;
-    border-radius: 10px;
-    padding: 2px 8px;
-    font-size: 12px;
-    margin-left: 4px;
-}
-.filtro-btn.ativo {
-    font-weight: bold;
-    border-bottom: 2px solid #1565c0;
-}
+/* ---------- Modal ---------- */
 
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(59, 43, 35, 0.55);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -92,11 +273,34 @@ button {
 }
 
 .modal-conteudo {
-    background: #fff;
-    padding: 24px;
+    background: var(--creme-claro);
+    font-family: 'Poppins', sans-serif;
+    padding: 32px 34px;
     border-radius: 10px;
+    border: 1px solid var(--bege-borda);
     max-width: 500px;
     max-height: 80vh;
     overflow-y: auto;
     position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.modal-conteudo p {
+    margin: 10px 0;
+}
+
+#modal-titulo {
+    font-family: 'Playfair Display', serif;
+    color: var(--marrom-escuro);
+    margin-top: 0;
+    margin-bottom: 16px;
+    padding-right: 24px;
+}
+
+#fechar-modal {
+    color: var(--marrom-madeira);
+}
+
+#fechar-modal:hover {
+    color: var(--terracota);
 }
