@@ -1,6 +1,8 @@
 package com.biblioteca.biblioteca.service;
 
 import java.util.NoSuchElementException;
+
+import com.biblioteca.biblioteca.dto.AvaliacaoRequest;
 import com.biblioteca.biblioteca.model.Estante;
 import com.biblioteca.biblioteca.model.StatusLeitura;
 import com.biblioteca.biblioteca.repository.EstanteRepository;
@@ -34,4 +36,12 @@ public class EstanteService {
         livro.setStatusLeitura(StatusLeitura.valueOf(novoStatus));
         return estanteRepository.save(livro);
     }
+
+    public Estante avaliar(Long id, AvaliacaoRequest req) {
+    Estante livro = estanteRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
+    livro.setNota(req.getNota());
+    livro.setResenha(req.getResenha());
+    return estanteRepository.save(livro);
+}
 }

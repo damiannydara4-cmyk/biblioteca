@@ -304,3 +304,28 @@ button:active {
 #fechar-modal:hover {
     color: var(--terracota);
 }
+
+.estrelas {
+    font-size: 26px;
+    color: var(--bege-borda, #ddd);
+    cursor: pointer;
+    margin: 8px 0;
+}
+.estrela.selecionada,
+.estrela:hover,
+.estrela:hover ~ .estrela {
+    color: var(--terracota, #9e4133);
+}
+.estrelas {
+    direction: rtl;
+    display: inline-flex;
+}
+#modal-resenha {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    font-family: 'Poppins', sans-serif;
+    border: 1px solid var(--bege-borda, #ccc);
+    border-radius: 6px;
+    resize: vertical;
+}

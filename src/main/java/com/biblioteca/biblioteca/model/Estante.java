@@ -4,12 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 @Entity  /*representa uma tabela no banco de dados. A classe estante será transformada em uma tabela. */
 @Table(name = "estante")
 @Data /*evita que  tenha que escrever manualmente vários métodos */
 @NoArgsConstructor/*esses dois criam os construtores */
 @AllArgsConstructor
+
 public class Estante {
 
     @Id /*identificador do livro no banco */
@@ -34,6 +37,13 @@ public class Estante {
     private StatusLeitura statusLeitura;
 
     private LocalDate dataAdicao = LocalDate.now(); /*guarda a data em que o livro foi guardado */
+
+    @Min(1)
+    @Max(5)
+    private Integer nota;
+
+    @Column(length = 2000)
+    private String resenha;
 }
 
 

@@ -1,12 +1,14 @@
 package com.biblioteca.biblioteca.controller;
 
 import com.biblioteca.biblioteca.dto.AtualizarStatusRequest;
+import com.biblioteca.biblioteca.dto.AvaliacaoRequest;
 import com.biblioteca.biblioteca.model.Estante;
 import com.biblioteca.biblioteca.service.EstanteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 /*import org.springframework.web.bind.annotation.GetMapping;
@@ -60,4 +62,11 @@ public class EstanteController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 }
+
+    @PutMapping("/estante/{id}/avaliacao")
+    public ResponseEntity<Estante> avaliar(
+            @PathVariable Long id,
+            @RequestBody @Valid AvaliacaoRequest req) {
+        return ResponseEntity.ok(estanteService.avaliar(id, req));
+    }
 }

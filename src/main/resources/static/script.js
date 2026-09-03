@@ -4,6 +4,10 @@ const API_LIVROS = 'http://localhost:9000/livros';
 // Variável global para guardar todos os livros da estante
 let estanteCompleta = [];
 
+// Variáveis do modal de avaliação
+let notaSelecionada = 0;
+let livroAtualId = null;
+
 document.addEventListener('DOMContentLoaded', () => {
     carregarEstante();
 
@@ -29,7 +33,7 @@ async function pesquisarLivros() {
         alert('Digite um termo para pesquisar.');
         return;
     }
-    
+
     mostrarSkeleton("searchResults");
 
     try {
@@ -127,7 +131,7 @@ async function carregarEstante() {
             mostrarToast("Erro ao buscar estante.", "error");
             throw new Error("Erro ao carregar estante do servidor.");
         }
-        
+
         estanteCompleta = await response.json();
 
         atualizarBadges();
@@ -184,6 +188,39 @@ async function atualizarStatusLeitura(id, novoStatus) {
     }
 }
 
+// 6. Salvar avaliação (nota + resenha) — PUT /estante/{id}/avaliacao
+async function salvarAvaliacao() {
+    const resenha = document.getElementById('modal-resenha').value;
+
+    try {
+        const response = await fetch(`${API_ESTANTE}/${livroAtualId}/avaliacao`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nota: notaSelecionada, resenha })
+        });
+
+        if (!response.ok) {
+            const erroTexto = await response.text();
+            throw new Error(erroTexto || 'Falha ao salvar avaliação');
+        }
+
+        const livroAtualizado = await response.json();
+
+        // Atualiza os dados locais sem precisar recarregar tudo do servidor
+        const idx = estanteCompleta.findIndex(l => l.id === livroAtualId);
+        if (idx !== -1) estanteCompleta[idx] = livroAtualizado;
+
+        mostrarToast('Avaliação salva com sucesso!');
+
+        const botaoAtivo = document.querySelector(".filtro-btn.ativo");
+        aplicarFiltro(botaoAtivo ? botaoAtivo.dataset.status : "TODOS");
+
+    } catch (error) {
+        console.error(error);
+        mostrarToast('Erro ao salvar avaliação', 'error');
+    }
+}
+
 function mostrarToast(mensagem, tipo = "success") {
     const container = document.getElementById("toast-container");
     if (!container) return;
@@ -234,11 +271,14 @@ function renderizarEstanteFiltrada(livros) {
         const card = document.createElement('div');
         card.style.cssText = 'border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 5px; display: flex; gap: 15px; align-items: center; background: #fff; cursor: pointer;';
 
+        const notaTexto = livro.nota ? '★'.repeat(livro.nota) + '☆'.repeat(5 - livro.nota) : '';
+
         card.innerHTML = `
             <img src="${livro.capa || 'https://via.placeholder.com/50x75'}" alt="Capa" style="width: 50px; height: 75px; object-fit: cover;">
             <div style="flex-grow: 1;">
                 <h4 style="margin: 0 0 5px 0;">${livro.titulo}</h4>
                 <p style="margin: 0 0 5px 0; font-size: 13px;"><strong>Autor:</strong> ${livro.autor || 'Desconhecido'}</p>
+                ${notaTexto ? `<p style="margin: 0 0 5px 0; font-size: 13px; color: #9e4133;">${notaTexto}</p>` : ''}
                 <label style="font-size: 12px;"><strong>Status:</strong>
                     <select onchange="atualizarStatusLeitura(${livro.id}, this.value)">
                         <option value="QUERO_LER" ${livro.statusLeitura === 'QUERO_LER' ? 'selected' : ''}>Quero Ler</option>
@@ -290,10 +330,10 @@ function ordenarEstante(criterio) {
         if (criterio === "dataAdicao") {
             return (b.id || 0) - (a.id || 0);
         }
-        
+
         const valorA = (a[criterio] || "").toString();
         const valorB = (b[criterio] || "").toString();
-        
+
         return valorA.localeCompare(valorB, 'pt-BR', { sensitivity: 'accent' });
     });
 
@@ -302,13 +342,17 @@ function ordenarEstante(criterio) {
 
 // Funções do Modal
 function abrirModal(livro) {
+    livroAtualId = livro.id;
+    notaSelecionada = livro.nota || 0;
     document.getElementById("modal-titulo").textContent = livro.titulo || "Título não informado";
     document.getElementById("modal-autor").textContent = livro.autor || "Desconhecido";
     document.getElementById("modal-editora").textContent = livro.editora ?? "—";
     document.getElementById("modal-data").textContent = livro.dataPublicacao ?? "—";
     document.getElementById("modal-paginas").textContent = livro.numeroPaginas ?? "—";
     document.getElementById("modal-sinopse").textContent = livro.sinopse ?? "Sinopse não disponível.";
+    document.getElementById('modal-resenha').value = livro.resenha || '';
     document.getElementById("modal-livro").classList.remove("oculto");
+    atualizarEstrelas(notaSelecionada);
 }
 
 document.getElementById("fechar-modal").addEventListener("click", () => {
@@ -321,15 +365,14 @@ document.getElementById("modal-livro").addEventListener("click", (e) => {
     }
 });
 
-
 // Para somente buscas dentro da estante
 document.getElementById("busca-interna").addEventListener("input", (e) => {
-    const termo = e.target.value.toLowerCase().trim();  //pega exatamente o texto que está escrito no campo naquele microssegundo.
+    const termo = e.target.value.toLowerCase().trim();
     const botaoAtivo = document.querySelector(".filtro-btn.ativo");
     const statusAtivo = botaoAtivo ? botaoAtivo.dataset.status : "TODOS";
-    
-    let lista = statusAtivo === "TODOS" 
-        ? estanteCompleta 
+
+    let lista = statusAtivo === "TODOS"
+        ? estanteCompleta
         : estanteCompleta.filter(l => {
             const statusLivro = (l.statusLeitura || "").trim().toUpperCase().replace(/[\s_]+/g, "");
             const statusAlvo = statusAtivo.trim().toUpperCase().replace(/[\s_]+/g, "");
@@ -341,6 +384,22 @@ document.getElementById("busca-interna").addEventListener("input", (e) => {
         const autor = (l.autor || "").toLowerCase();
         return titulo.includes(termo) || autor.includes(termo);
     });
-    
+
     renderizarEstanteFiltrada(filtrados);
 });
+
+// Avaliação: estrelas
+function atualizarEstrelas(nota) {
+    document.querySelectorAll('.estrela').forEach(el => {
+        el.classList.toggle('selecionada', Number(el.dataset.valor) <= nota);
+    });
+}
+
+document.querySelectorAll('.estrela').forEach(el => {
+    el.addEventListener('click', () => {
+        notaSelecionada = Number(el.dataset.valor);
+        atualizarEstrelas(notaSelecionada);
+    });
+});
+
+document.getElementById('btn-salvar-avaliacao').addEventListener('click', salvarAvaliacao);
