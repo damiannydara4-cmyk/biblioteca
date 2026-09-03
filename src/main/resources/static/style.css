@@ -285,8 +285,14 @@ button:active {
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-.modal-conteudo p {
-    margin: 10px 0;
+.modal-conteudo {
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* Cria um espaçamento uniforme entre cada elemento (título, parágrafos, sinopse, avaliação) */
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 25px;
 }
 
 #modal-titulo {
@@ -305,27 +311,37 @@ button:active {
     color: var(--terracota);
 }
 
-.estrelas {
-    font-size: 26px;
-    color: var(--bege-borda, #ddd);
-    cursor: pointer;
-    margin: 8px 0;
+.avaliacao-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+    border-top: 1px solid #e0d6c3; /* Opcional: uma linhazinha separando os dados do livro da avaliação */
+    padding-top: 15px;
 }
-.estrela.selecionada,
-.estrela:hover,
-.estrela:hover ~ .estrela {
+
+.estrelas {
+    display: flex;
+    flex-direction: row; /* Garante que preencham da esquerda para a direita */
+    gap: 4px;
+    font-size: 24px;
+    cursor: pointer;
+    unicode-bidi: bidi-override; /* Ajuda a forçar a direção correta dependendo do caractere */
+}
+
+.estrela.selecionada {
     color: var(--terracota, #9e4133);
 }
-.estrelas {
-    direction: rtl;
-    display: inline-flex;
+
+.estrela:hover {
+    color: var(--terracota-claro, #c17a5f);
 }
+
 #modal-resenha {
     width: 100%;
-    margin-top: 10px;
-    padding: 10px;
-    font-family: 'Poppins', sans-serif;
-    border: 1px solid var(--bege-borda, #ccc);
-    border-radius: 6px;
     resize: vertical;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
 }

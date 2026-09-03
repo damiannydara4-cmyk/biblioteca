@@ -10,42 +10,25 @@
     <div class="container">
         <h1>Minha Biblioteca Pessoal</h1>
 
-        <!-- Seção de Pesquisa -->
-        <section>
+                <section>
             <h2>Pesquisar Livros</h2>
             <input type="text" id="searchInput" placeholder="Digite o título ou autor..." onkeydown="if(event.key === 'Enter') pesquisarLivros()">
             <button id="btn-buscar">Buscar</button>
             <div id="searchResults"></div>
         </section>
 
-
         <div class="busca-estante-container" style="margin-bottom: 15px;">
             <input type="text" id="busca-interna" placeholder="Filtrar livros na sua estante..." style="padding: 8px; width: 300px; border: 1px solid #ccc; border-radius: 4px;">
         </div>
 
-        <!--Seção de Filtração por Status-->
-        <div class="filtros-estante">
+                <div class="filtros-estante">
             <button class="filtro-btn ativo" data-status="TODOS">Todos <span class="badge" id="badge-TODOS"></span></button>
             <button class="filtro-btn" data-status="QUERO_LER">Quero ler<span class="badge" id="badge-QUERO_LER"></span></button>
             <button class="filtro-btn" data-status="LENDO">Lendo <span class="badge" id="badge-LENDO"></span></button>
             <button class="filtro-btn" data-status="LIDO">Lidos <span class="badge" id="badge-LIDO"></span></button>
         </div>
-        <!--Estrelas-->
-        <div class="avaliacao-container">
-            <p><strong>Sua avaliação:</strong></p>
-            <div id="estrelas" class="estrelas">
-                <span class="estrela" data-valor="1">★</span>
-                <span class="estrela" data-valor="2">★</span>
-                <span class="estrela" data-valor="3">★</span>
-                <span class="estrela" data-valor="4">★</span>
-                <span class="estrela" data-valor="5">★</span>
-            </div>
-            <textarea id="modal-resenha" placeholder="O que você achou desse livro?" rows="4"></textarea>
-            <button id="btn-salvar-avaliacao">Salvar avaliação</button>
-        </div>
 
-        <!-- Seção da Estante -->
-        <section>
+                <section>
             <h2>Minha Estante</h2>
             <div id="shelfResults"></div>
         </section>
@@ -56,7 +39,7 @@
             <option value="dataAdicao">Mais recentes</option>
         </select>
 
-        <div id="modal-livro" class="modal-overlay oculto">
+                <div id="modal-livro" class="modal-overlay oculto">
             <div class="modal-conteudo">
                 <button id="fechar-modal" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
                 <h2 id="modal-titulo"></h2>
@@ -66,15 +49,24 @@
                 <p><strong>Páginas: </strong><span id="modal-paginas"></span></p>
                 <p id="modal-sinopse"></p>
                 
+                <div class="avaliacao-container">
+                    <p><strong>Sua avaliação:</strong></p>
+                    <div id="estrelas" class="estrelas">
+                        <span class="estrela" data-valor="1">★</span>
+                        <span class="estrela" data-valor="2">★</span>
+                        <span class="estrela" data-valor="3">★</span>
+                        <span class="estrela" data-valor="4">★</span>
+                        <span class="estrela" data-valor="5">★</span>
+                    </div>
+                    <textarea id="modal-resenha" placeholder="O que você achou desse livro?" rows="4"></textarea>
+                    <button id="btn-salvar-avaliacao">Salvar avaliação</button>
+                </div>
             </div>
-
         </div>
+
         <div id="toast-container" style="position:fixed; top:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:10px;"></div>
     </div>
-    
-
-    
 
     <script src="script.js"></script>
 </body>
-</html>
+</html> 
