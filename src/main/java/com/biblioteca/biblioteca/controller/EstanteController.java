@@ -63,7 +63,7 @@ public class EstanteController {
         }
 }
 
-    @PutMapping("/estante/{id}/avaliacao")
+    @PutMapping("/{id}/avaliacao")
     public ResponseEntity<Estante> avaliar(
             @PathVariable Long id,
             @RequestBody @Valid AvaliacaoRequest req) {
